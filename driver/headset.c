@@ -460,6 +460,11 @@ static int gip_headset_op_audio_samples(struct gip_client *client,
 	return 0;
 }
 
+static inline enum hrtimer_restart headset_timer_callback(struct hrtimer *timer)
+{
+	return HRTIMER_NORESTART;
+}
+
 static int gip_headset_probe(struct gip_client *client)
 {
 	struct gip_headset *headset;
@@ -481,7 +486,7 @@ static int gip_headset_probe(struct gip_client *client)
 	INIT_DELAYED_WORK(&headset->work_power_on, gip_headset_power_on);
 	INIT_WORK(&headset->work_register, gip_headset_register);
 
-	hrtimer_init(&headset->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+	hrtimer_setup(&headset->timer, headset_timer_callback, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	headset->timer.function = gip_headset_send_samples;
 
 	err = gip_enable_audio(client);
