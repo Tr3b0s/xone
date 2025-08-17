@@ -98,7 +98,7 @@ struct gip_gamepad {
 
 static void gip_gamepad_send_rumble(struct timer_list *timer)
 {
-	struct gip_gamepad_rumble *rumble = from_timer(rumble, timer, timer);
+	struct gip_gamepad_rumble *rumble = timer_container_of(rumble, timer, timer);
 	struct gip_gamepad *gamepad = container_of(rumble, typeof(*gamepad),
 						   rumble);
 	unsigned long flags;
